@@ -1,5 +1,5 @@
 var osc = require('node-osc');
-var io = require('socket.io')(8081);
+var io = require('socket.io')(8090);
 
 
 var oscServer, oscClient;

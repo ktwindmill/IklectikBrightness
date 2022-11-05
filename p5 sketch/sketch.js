@@ -25,7 +25,7 @@ let newString;
 
 //serial communication
 let serial;
-let portName = "COM5";
+let portName = "/dev/tty.usbmodem1471";
 let inData; 
 let outByte = 0;
 let counter = 0;
@@ -44,6 +44,21 @@ let markov;
 let output;
 
 
+let deviceList = [];
+
+
+function getDevices(devices) {
+  // console.log(devices); // To see all devices
+  arrayCopy(devices, deviceList);
+  for (let i = 0; i < devices.length; ++i) {
+    let deviceInfo = devices[i];
+    if (deviceInfo.kind == 'videoinput') {
+      console.log("Device name :", devices[i].label);
+      console.log("DeviceID :", devices[i].deviceId);
+    }
+  }
+}
+
 
 
 function preload() {
@@ -53,10 +68,25 @@ function preload() {
   //preload seed data
   // lines = loadStrings('clockwork.txt');
   lines = loadStrings('etiqutte.txt');
+  navigator.mediaDevices.enumerateDevices().then(getDevices);
+
 }
 
 
 function setup() {
+
+  let constraints = {
+    video:
+    {
+    }
+  };
+  // canvas = createCanvas(width, height);
+  background(255);
+  video = createCapture(constraints);
+  console.log(deviceList);
+  for (let x = 0; x < deviceList.length; x++) {
+    console.log(deviceList[x]);
+  }
 
   createCanvas(640, 240);
 
@@ -64,7 +94,7 @@ function setup() {
   frameRate(60);
   colorMode(HSB, 255);
   pixelDensity(1);
-  video = createCapture(VIDEO);
+  // video = createCapture({video:{deviceId:"0x100000954"}});
   video.size(width,height);
   // The above function actually makes a separate video
   // element on the page.  The line below hides it since we are
@@ -82,7 +112,7 @@ function setup() {
     
   //osc set up
   //setupOsc(input, output);
-  setupOsc(12000, 9999);
+  // setupOsc(12000, 9999);
     
     //debugging
   count = 0;
@@ -171,10 +201,10 @@ function draw() {
         console.log(tempString);
         
       generate(arrayOfTextActions[textCoordX]);
-        
+        serial.write(newString);
         
       if(isConnected){
-        sendOsc('/eye',tempString);
+        // sendOsc('/eye',tempString);
         // console.log('eye');
       }
     }
@@ -182,11 +212,13 @@ function draw() {
          if(mapC[0] == 88){
  let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'ear';
              console.log(tempString);
-             
+             generate(arrayOfTextActions[textCoordX]);
+             serial.write(newString);
+                  
             // generate(tempString);
              
              if(isConnected){
-    sendOsc('/eye',tempString);
+    // sendOsc('/eye',tempString);
            // console.log('eye');
             }
          }
@@ -195,11 +227,13 @@ function draw() {
              
  let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'stomach';
              console.log(tempString);
-             
+             generate(arrayOfTextActions[textCoordX]);
+             serial.write(newString);
+                  
              //generate(tempString);
              
              if(isConnected){
-    sendOsc('/eye',tempString);
+    // sendOsc('/eye',tempString);
            // console.log('eye');
             }
              
@@ -222,15 +256,15 @@ function draw() {
 //Display in the console.log the fortune message and send it to the serial port
 function mousePressed() {
   
- // let message = "hello"; 
+ let message = "hello"; 
   
    // let r = int(random(0, words.length-1));
    // let msg = words[];
     let msg = closestColorX;
     console.log(msg);
   
-  //console.log(message);
- // serial.write(message);
+  console.log(message);
+  serial.write(message);
     
    // console.log(arrayOfTextObjects[1]);
     
