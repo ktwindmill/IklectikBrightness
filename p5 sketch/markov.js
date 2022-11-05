@@ -31,6 +31,27 @@ class MarkovGenerator {
     this.beginnings = [];
   }
 
+
+  seedBeginnings(text){
+    let beginArr = [];
+    let para = text.split(/\n\n/);
+
+    for(let i = 0; i < para.length; i++){
+      let p = para[i].replace(/\s{2,}/g," ");
+      p = p.replace(/\n/g,"");
+      let beginning = p.substring(0, this.n);
+      this.beginnings.push(beginning);
+
+      if(i < 12){
+        beginArr.push(beginning);
+      }
+   
+    }
+
+    return beginArr;
+  }
+
+
   // A function to feed in text to the markov chain
   feed(text) {
 
@@ -39,9 +60,11 @@ class MarkovGenerator {
       return false;
     }
 
-    // Store the first ngram of this line
-    let beginning = text.substring(0, this.n);
-    this.beginnings.push(beginning);
+    // // Store the first ngram of this line
+    // let beginning = text.substring(0, this.n).toLowerCase();
+    // this.beginnings.push(beginning);
+    text = text.replace(/\s{2,}/g," ");
+    text = text.replace(/\n/g,"");
 
     // Now let's go through everything and create the dictionary
     for (let i = 0; i < text.length - this.n; i++) {
@@ -63,7 +86,7 @@ class MarkovGenerator {
    // let current = this.beginnings.choice();
       
       //choose a beginning
-      let current = beg;
+    let current = beg;
       
     let output = current;
 
