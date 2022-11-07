@@ -31,7 +31,7 @@ void setup() {
   mySerial.begin(9600);  // Initialize SoftwareSerial
   printer.begin();        // Init printer (same regardless of serial type)
 
-     printer.upsideDownOn();
+    // printer.upsideDownOn();
       printer.justify('C');
       printer.setSize('M');
         //  printer.printBitmap(104, 100, ear); 
@@ -45,28 +45,28 @@ void loop() {
   if (Serial.available() > 0) {
 
     message = Serial.readString();
-     printer.upsideDownOn();
-     printer.justify('C');
-     printer.setSize('M');
-     printer.println(message+"\r\n");
+//     printer.upsideDownOn();
+//     printer.justify('C');
+//     printer.setSize('M');
+//     printer.println(message+"\r\n");
 
 //    // needs to be looking for if any part of the string contains the bodypart 
-//    if (message.indexOf("ear") >= 0) {
-//      
-//       printer.upsideDownOn();
-//      printer.justify('C');
-//      printer.setSize('M');
-//        //  printer.printBitmap(104, 100, ear); 
-//          printer.println(message+"\r\n");
-//         
-//     }
-//     if (message.indexOf("eye") >= 0) {
-//        printer.upsideDownOn();
-//        printer.justify('C');
-//        printer.setSize('M');
-//        //  printer.printBitmap(104, 100, ear); 
-//          printer.println(message+"\r\n");
-//     }
+    if (message.indexOf("ear") != -1) {
+      
+       //printer.upsideDownOn();
+      printer.justify('C');
+      printer.setSize('M');
+          printer.printBitmap(104, 100, ear); 
+          printer.println(message+"\r\n");
+         
+     }
+     if (message.indexOf("eye") != -1) {
+       // printer.upsideDownOn();
+        printer.justify('C');
+        printer.setSize('M');
+          printer.printBitmap(104, 100, mouth); 
+          printer.println(message+"\r\n");
+     }
 
     //   {
     //       printer.println("not working");
