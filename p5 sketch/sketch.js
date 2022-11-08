@@ -114,7 +114,7 @@ function setup() {
     
   //osc set up
   //setupOsc(input, output);
-  setupOsc(6666, 9999);
+  //setupOsc(6666, 9999);
     
     //debugging
   count = 0;
@@ -129,13 +129,15 @@ function setup() {
   
 
   text = text.replace(/[0-9]/g, "");
-  text = text.replace(/[\-\/#!$%\^&\*;:{}=\-_~()@\+\?><\[\]\+]/g, "");
+  text = text.replace(/[\-\.,/#"!$%\^&\*;:{}=\-_~()@\+\?><\[\]\+]/g, "");
   // text = text.replace(/\s{2,}/g," ");
   console.log(text);
   // N-gram length and maximum length
-  markov = new MarkovGenerator(10, 150);
+  markov = new MarkovGenerator(7, 30);
+  // arrayOfTextActions = markov.seedNgramBeginnings(text);
   arrayOfTextActions = markov.seedBeginnings(text);
   console.log(arrayOfTextActions);
+  // markov.feedNgrams(text);
   markov.feed(text);
   // markov.feed(beginWords);
   console.log(markov);
@@ -197,7 +199,6 @@ function draw() {
     
     let textCoordY = int(map(closestColorY, 0, height, 0,9));
 
-    console.log(frameCount, frameRate());
   
   if (frameCount % 120 == 0 ) {
     if(mapC[0] == 0){
@@ -345,6 +346,7 @@ function setupOsc(oscPortIn, oscPortOut) {
 
 function generate(beg) {
   // Generate some text
+  // let result = markov.generateNgrams(beg);
   let result = markov.generate(beg);
   // Put in HTML line breaks wherever there was a carriage return
   result = result.replace('\n','<br/><br/>');
