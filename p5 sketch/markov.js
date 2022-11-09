@@ -34,16 +34,19 @@ class MarkovGenerator {
 
   seedBeginnings(text){
     let beginArr = [];
-    let para = text.split(/\n\n/);
+   // let para = text.split(/\n\n/);
+    let para = text.split(' ');
 
     for(let i = 0; i < para.length; i++){
-      let p = para[i];
-      p = p.replace(/\n/g,"");
-      let beginning = p.split(" ")[0];
+     // let p = para[i];
+      //p = p.replace(/\n/g,"");
+      //let beginning = p.split(" ")[0];
+       let beginning = para[i];
       if(this.beginnings.includes(beginning) == false){
         this.beginnings.push(beginning);
         if(beginArr.length < 12){
           beginArr.push(beginning);
+          console.log(beginArr);
         }
       }
 
@@ -81,7 +84,7 @@ class MarkovGenerator {
     }
 
     // text = text.replace(/\s{2,}/g," ");
-    text = text.replace(/\n/g,"");
+   // text = text.replace(/\n/g,"");
 
     let words = text.split(" ");
 

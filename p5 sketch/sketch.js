@@ -16,8 +16,11 @@ let count;
 let col;
 let arrayOfNumbers = [];
 let threshold;
-let arrayOfTextObjects = ['this', 'that', 'those', 'there', 'here', 'them', 'these', 'everything', 'everyone', 'nothing'];
-// let arrayOfTextActions = ['take','touch','travel','stop','stop','swallow','halve','reverse','count','melt','hold'];
+//let arrayOfTextObjects = ['this', 'that', 'those', 'there', 'here', 'them', 'these', 'everything', 'everyone', 'nothing'];
+//let arrayOfTextActions = ['take','touch','travel','stop','stop','swallow','halve','reverse','count','melt','hold'];
+let earBeginnings = ['whisper to the ear, tell it ','tune the ear, ','what does it think if you tell it','speak up, say loudly to the ear ','shout - ','give it these instructions, tell the ear to '];
+let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, always ','when dealing with a digesting organ it is important to remember to, ', 'move the guts around, touch ','what do you make of it? go, react in the stomach lining ']
+let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its will ','the mouth is talking to you. ','pay attention, this is important, ','listen to the mouth, and tell it to the ear. repeat ','repeat what the mouth is saying with your body. consider ','can you tune the mouth baring in mind ']
 let arrayOfTextActions;// = ['clock','magnetic','it','the','and','this','wheel','machines','most','fits','windmills'];
 let instructions;
 let zones;
@@ -64,11 +67,11 @@ function getDevices(devices) {
 
 function preload() {
   //preload zone mapping
-  img = loadImage('testMap.png');
+  img = loadImage('IklectikMaps/V1.png');
     
   //preload seed data
   // lines = loadStrings('clockwork.txt');
-  lines = loadStrings('etiqutte.txt');
+  lines = loadStrings('cleancombined.txt');
   navigator.mediaDevices.enumerateDevices().then(getDevices);
 
 }
@@ -116,7 +119,7 @@ function setup() {
   //setupOsc(input, output);
   //setupOsc(6666, 9999);
     
-    //debugging
+  //debugging
   count = 0;
     
     
@@ -124,16 +127,18 @@ function setup() {
   //markov generator
   // Join everything together in one long string
   // Keep carriage returns so these will show up in the markov generator
-  let text = lines.join('\n').toLowerCase();
+  // let text = lines.join('\n').toLowerCase();
   // let beginWords = arrayOfTextActions.join('\n');
   
-
-  text = text.replace(/[0-9]/g, "");
-  text = text.replace(/[\-\.,/#"!$%\^&\*;:{}=\-_~()@\+\?><\[\]\+]/g, "");
-  // text = text.replace(/\s{2,}/g," ");
+  let text = lines[0];
+   
+  //clean text
+  //text = text.replace(/[0-9]/g, "");
+  //text = text.replace(/[\-\.,/#"!$%\^&\*;:{}=\-_~()@\+\?><\[\]\+]/g, "");
+  //text = text.replace(/\s{2,}/g," ");
   console.log(text);
   // N-gram length and maximum length
-  markov = new MarkovGenerator(7, 30);
+  markov = new MarkovGenerator(7, 15);
   // arrayOfTextActions = markov.seedNgramBeginnings(text);
   arrayOfTextActions = markov.seedBeginnings(text);
   console.log(arrayOfTextActions);
@@ -151,13 +156,10 @@ function draw() {
 
   // Draw the video
   image(video,0,0,320,240);
-  image(img, width/2, 0);
+  image(img, width/2, 0, 320, 240);
 
     
     
-    
-  // if (frameCount % 120 == 0 ) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
-
     counter++;
     
     closestColorX = 0;
@@ -190,26 +192,32 @@ function draw() {
     // ellipse(closestColorX,closestColorY, 50);
     // ellipse(closestColorX+320,closestColorY, 50);
 
+    
+    
     let mapC = img.get(closestColorX,closestColorY);
          
 
-         
-    let textCoordX = int(map(closestColorX, 0, 320, 0,9));
-  // console.log(textCoordX);
-    
-    let textCoordY = int(map(closestColorY, 0, height, 0,9));
+    //Left over code from when we were generating text from the brightness coordinates
+    // let textCoordX = int(map(closestColorX, 0, 320, 0,9));
+    // console.log(textCoordX);
+    //let textCoordY = int(map(closestColorY, 0, height, 0,9));
 
   
   if (frameCount % 120 == 0 ) {
     if(mapC[0] == 0){
         
-      let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'eye';
-        console.log(tempString);
+        //Left over code from when we were generating text from the brightness coordinates
+        //let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'eye';
+        //console.log(tempString);
         
-        generate(arrayOfTextActions[textCoordX]);
-        newString += " eye";
-        serial.write(newString);
-        createP(newString);
+        //STOMACH
+        let tempIndex = int(random(arrayOfTextActions-1));
+        let begIndex = int(random(stomachBeginnings.length-1));
+        //console.log(begIndex);
+        generate(arrayOfTextActions[tempIndex]);
+        instructions = stomachBeginnings[begIndex] + newString;
+        serial.write(instructions);
+        createP(instructions);
         
         if(isConnected){
           sendOsc('/eye',newString);
@@ -218,29 +226,37 @@ function draw() {
       }
           
       if(mapC[0] == 88){
-        let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'ear';
-          console.log(tempString);
-          generate(arrayOfTextActions[textCoordX]);
-          newString += " ear";
-          serial.write(newString);
-          createP(newString);
+        //let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'ear';
+        //console.log(tempString);
+          
+          
+        //  MOUTH
+        let tempIndex = int(random(arrayOfTextActions-1));
+        let begIndex = int(random(mouthBeginnings.length-1));
+        //console.log(begIndex);
+        generate(arrayOfTextActions[tempIndex]);
+        instructions = mouthBeginnings[begIndex] + newString;
+        serial.write(instructions);
+        createP(instructions);
               
         // generate(tempString);
           
-          if(isConnected){
-          sendOsc('/eye',newString);
+        if(isConnected){
+        sendOsc('/eye',newString);
         // console.log('eye');
         }
       }
          
       if(mapC[0] == 255){
           
-        let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'stomach';
-          console.log(tempString);
-          generate(arrayOfTextActions[textCoordX]);
-          newString += " stomach";
-          serial.write(newString);
-          createP(newString);
+        //EAR
+        let tempIndex = int(random(arrayOfTextActions-1));
+        let begIndex = int(random(stomachBeginnings.length-1));
+        //console.log(begIndex);
+        generate(arrayOfTextActions[tempIndex]);
+        instructions = earBeginnings[begIndex]+ newString;
+        serial.write(instructions);
+        createP(instructions);
               
           //generate(tempString);
           
@@ -349,12 +365,9 @@ function generate(beg) {
   // let result = markov.generateNgrams(beg);
   let result = markov.generate(beg);
   // Put in HTML line breaks wherever there was a carriage return
-  result = result.replace('\n','<br/><br/>');
+  //result = result.replace('\n','<br/><br/>');
   newString = result;
 
 }
 
-
-//to do:
-//create a threshold adjusty function
   
