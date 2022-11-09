@@ -12,8 +12,13 @@ let closestColorX = 0;
 let closestColorY=0;
 let c;
 let b;
+let avgHue;
+let avgBrightness;
+let avgSat;
 let count;
 let col;
+let workColor; //blue
+let restColor; // red
 let arrayOfNumbers = [];
 let threshold;
 //let arrayOfTextObjects = ['this', 'that', 'those', 'there', 'here', 'them', 'these', 'everything', 'everyone', 'nothing'];
@@ -21,7 +26,8 @@ let threshold;
 let earBeginnings = ['whisper to the ear, tell it ','tune the ear, ','what does it think if you tell it','speak up, say loudly to the ear ','shout - ','give it these instructions, tell the ear to '];
 let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, always ','when dealing with a digesting organ it is important to remember to, ', 'move the guts around, touch ','what do you make of it? go, react in the stomach lining ']
 let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its will ','the mouth is talking to you. ','pay attention, this is important, ','listen to the mouth, and tell it to the ear. repeat ','repeat what the mouth is saying with your body. consider ','can you tune the mouth baring in mind ']
-let arrayOfTextActions;// = ['clock','magnetic','it','the','and','this','wheel','machines','most','fits','windmills'];
+let arrayOfTextActions = [];// = ['clock','magnetic','it','the','and','this','wheel','machines','most','fits','windmills'];
+let textActionsIndex = 0;
 let instructions;
 let zones;
 let newString;
@@ -78,7 +84,6 @@ function preload() {
 
 
 function setup() {
-
   let constraints = {
     video:
     {
@@ -92,11 +97,16 @@ function setup() {
   //   console.log(deviceList[x]);
   // }
 
-  createCanvas(640, 240);
+  createCanvas(640, 480);
 
   //video set up
   frameRate(60);
-  colorMode(HSB, 255);
+  colorMode(HSB, 100);
+
+  workColor = color(50,100,100); //blue
+  restColor = color(0,100,100); // red
+  noStroke();
+
   pixelDensity(1);
   // video = createCapture({video:{deviceId:"0x100000954"}});
   video = createCapture(VIDEO);
@@ -104,11 +114,11 @@ function setup() {
   // The above function actually makes a separate video
   // element on the page.  The line below hides it since we are
   // drawing the video to the canvas
-  //video.hide();
+  video.hide();
      
-  threshold = 200;
+  threshold = 80;//200 under the 255 mode 
     
-  col = color('rgb(255, 0, 0)');
+  col = color('hsb(0, 100%, 100%)');
        
   //serial set up
   serial = new p5.SerialPort();
@@ -140,7 +150,9 @@ function setup() {
   // N-gram length and maximum length
   markov = new MarkovGenerator(7, 15);
   // arrayOfTextActions = markov.seedNgramBeginnings(text);
-  arrayOfTextActions = markov.seedBeginnings(text);
+  let tempArray = markov.seedBeginnings(text); //quick test of the structure
+  arrayOfTextActions.push(tempArray);
+  arrayOfTextActions.push(tempArray);
   console.log(arrayOfTextActions);
   // markov.feedNgrams(text);
   markov.feed(text);
@@ -165,13 +177,18 @@ function draw() {
     closestColorX = 0;
     closestColorY = 0;
     count = 0;
-    
+    avgHue = 0;
+    avgBrightness = 0;
+    avgSat = 0;
   
     for(let x = 0; x < 320; x+=2){
       for(let y = 0; y < 240; y+=2){
       
         c = video.get(x,y);
         b = brightness(c);
+        avgHue += hue(c);
+        avgBrightness += b;
+        avgSat += saturation(c);
       // console.log(x);
         
         if(b>threshold){
@@ -187,7 +204,13 @@ function draw() {
             closestColorX = closestColorX / count;
             closestColorY = closestColorY / count;
     }
- 
+
+    //average of pixels sampled in nested for loop
+    let numPix = (160 * 120)
+    avgHue /= numPix; 
+    avgBrightness /= numPix; 
+    avgSat /= numPix;
+
     // fill(col);
     // ellipse(closestColorX,closestColorY, 50);
     // ellipse(closestColorX+320,closestColorY, 50);
@@ -214,7 +237,7 @@ function draw() {
         let tempIndex = int(random(arrayOfTextActions-1));
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
-        generate(arrayOfTextActions[tempIndex]);
+        generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = stomachBeginnings[begIndex] + newString;
         serial.write(instructions);
         createP(instructions);
@@ -234,7 +257,7 @@ function draw() {
         let tempIndex = int(random(arrayOfTextActions-1));
         let begIndex = int(random(mouthBeginnings.length-1));
         //console.log(begIndex);
-        generate(arrayOfTextActions[tempIndex]);
+        generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = mouthBeginnings[begIndex] + newString;
         serial.write(instructions);
         createP(instructions);
@@ -253,7 +276,7 @@ function draw() {
         let tempIndex = int(random(arrayOfTextActions-1));
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
-        generate(arrayOfTextActions[tempIndex]);
+        generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = earBeginnings[begIndex]+ newString;
         serial.write(instructions);
         createP(instructions);
@@ -280,8 +303,40 @@ function draw() {
 
 
       fill(col);
-      ellipse(closestColorX,closestColorY, 50);
-      ellipse(closestColorX+320,closestColorY, 50);
+      ellipse(closestColorX,closestColorY, 30);
+      ellipse(closestColorX+320,closestColorY, 30);
+
+   
+      let avgCol = color(int(avgHue), int(avgSat), int(avgBrightness));
+     console.log(int(avgHue), int(avgSat), int(avgBrightness));
+      fill(avgCol);
+      rect(0,240,320,240);
+
+      fill(0,0,0);
+      rect(320,240,320,240);
+
+      fill(color(workColor._getHue(),int(avgSat), int(avgBrightness)));
+      rect(320,240,320,20);
+
+      // let distWork = dist(workColor._getHue(),workColor._getSaturation(),workColor._getBrightness(),int(avgHue), int(avgSat), int(avgBrightness));
+      // let distRest = dist(restColor._getHue(),restColor._getSaturation(),restColor._getBrightness(),int(avgHue), int(avgSat), int(avgBrightness));
+
+      let distWork = abs(workColor._getHue() - int(avgHue));
+      let distRest = abs(restColor._getHue() - int(avgHue));
+
+     
+      let distRange = distWork-distRest;
+      textActionsIndex = (distRange < 0) ? 0 : 1;
+      console.log(distWork,distRest,distWork-distRest,textActionsIndex);
+      let yGauge = map(distRange,-50,50,240,height);
+      fill(avgCol);
+      rect(320,yGauge,320,10);
+
+      
+
+      // fill(restColor);
+      fill(color(restColor._getHue(),int(avgSat), int(avgBrightness)));
+      rect(320,height-20,320,20);
 
 }
 
