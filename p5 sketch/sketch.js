@@ -24,13 +24,19 @@ let threshold;
 //let arrayOfTextObjects = ['this', 'that', 'those', 'there', 'here', 'them', 'these', 'everything', 'everyone', 'nothing'];
 //let arrayOfTextActions = ['take','touch','travel','stop','stop','swallow','halve','reverse','count','melt','hold'];
 let earBeginnings = ['whisper to the ear, tell it ','tune the ear, ','what does it think if you tell it','speak up, say loudly to the ear ','shout - ','give it these instructions, tell the ear to '];
-let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, always ','when dealing with a digesting organ it is important to remember to, ', 'move the guts around, touch ','what do you make of it? go, react in the stomach lining ']
-let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its will ','the mouth is talking to you. ','pay attention, this is important, ','listen to the mouth, and tell it to the ear. repeat ','repeat what the mouth is saying with your body. consider ','can you tune the mouth baring in mind ']
-let arrayOfTextActions = [];// = ['clock','magnetic','it','the','and','this','wheel','machines','most','fits','windmills'];
+let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, always ','when dealing with a digesting organ it is important to remember to, ', 'move the guts around, touch ','what do you make of it? go, react in the stomach lining '];
+let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its will ','the mouth is talking to you. ','pay attention, this is important, ','listen to the mouth, and tell it to the ear. repeat ','repeat what the mouth is saying with your body. consider ','can you tune the mouth baring in mind '];
+//index 0 will be work words
+//index 1 will be rest words
+let arrayOfTextActions = [
+  ['the', 'present', 'volume', 'may', 'be', 'considered', 'as', 'one', 'of', 'consequences', 'that','a'], 
+  ['ten', 'years', 'to', 'visit', 'a', 'considerable', 'number', 'workshops', 'and', 'factories','pipe','work']
+];
 let textActionsIndex = 0;
 let instructions;
-let zones;
+let zone = "";
 let newString;
+let textlog;
 
 //serial communication
 let serial;
@@ -52,63 +58,31 @@ let markov;
 
 //output element
 let output;
-
-
-let deviceList = [];
-
-
-function getDevices(devices) {
-  // console.log(devices); // To see all devices
-  arrayCopy(devices, deviceList);
-  for (let i = 0; i < devices.length; ++i) {
-    let deviceInfo = devices[i];
-    if (deviceInfo.kind == 'videoinput') {
-      console.log("Device name :", devices[i].label);
-      console.log("DeviceID :", devices[i].deviceId);
-    }
-  }
-}
-
-
+let courier;
 
 function preload() {
   //preload zone mapping
   img = loadImage('IklectikMaps/V1.png');
-    
+  courier = loadFont('fonts/CourierNew.ttf');
   //preload seed data
   // lines = loadStrings('clockwork.txt');
   lines = loadStrings('cleancombined.txt');
-  navigator.mediaDevices.enumerateDevices().then(getDevices);
 
 }
 
 
 function setup() {
-  let constraints = {
-    video:
-    {
-    }
-  };
-  // canvas = createCanvas(width, height);
-  background(255);
-  // video = createCapture(constraints);
-  // console.log(deviceList);
-  // for (let x = 0; x < deviceList.length; x++) {
-  //   console.log(deviceList[x]);
-  // }
-
-  createCanvas(640, 480);
-
-  //video set up
-  frameRate(60);
   colorMode(HSB, 100);
-
+  let myCanvas = createCanvas(960, 480);
+  myCanvas.parent("canvasContainer");
+  background(255);
   workColor = color(50,100,100); //blue
   restColor = color(0,100,100); // red
   noStroke();
 
+  //video set up
+  frameRate(60);
   pixelDensity(1);
-  // video = createCapture({video:{deviceId:"0x100000954"}});
   video = createCapture(VIDEO);
   video.size(320,240);
   // The above function actually makes a separate video
@@ -116,9 +90,9 @@ function setup() {
   // drawing the video to the canvas
   video.hide();
      
-  threshold = 80;//200 under the 255 mode 
+  threshold = 80;//200 under the 255 mode but now we are using HSB 100
     
-  col = color('hsb(0, 100%, 100%)');
+  col = color('hsb(0, 100%, 100%)');//red
        
   //serial set up
   serial = new p5.SerialPort();
@@ -132,106 +106,91 @@ function setup() {
   //debugging
   count = 0;
     
-    
-    
   //markov generator
-  // Join everything together in one long string
-  // Keep carriage returns so these will show up in the markov generator
-  // let text = lines.join('\n').toLowerCase();
-  // let beginWords = arrayOfTextActions.join('\n');
-  
   let text = lines[0];
-   
-  //clean text
-  //text = text.replace(/[0-9]/g, "");
-  //text = text.replace(/[\-\.,/#"!$%\^&\*;:{}=\-_~()@\+\?><\[\]\+]/g, "");
-  //text = text.replace(/\s{2,}/g," ");
-  console.log(text);
+  // console.log(text);
+
   // N-gram length and maximum length
   markov = new MarkovGenerator(7, 15);
   // arrayOfTextActions = markov.seedNgramBeginnings(text);
-  let tempArray = markov.seedBeginnings(text); //quick test of the structure
-  arrayOfTextActions.push(tempArray);
-  arrayOfTextActions.push(tempArray);
+   //quick test of the structure
+  // let tempArray = markov.seedBeginnings(text);
+  // arrayOfTextActions.push(tempArray);
+  // arrayOfTextActions.push(tempArray);
   console.log(arrayOfTextActions);
   // markov.feedNgrams(text);
   markov.feed(text);
   // markov.feed(beginWords);
-  console.log(markov);
+  // console.log(markov);
     
+  textlog = document.getElementById("log");
     
 }
 
 function draw() {
-    
-    
+  noStroke();
 
   // Draw the video
   image(video,0,0,320,240);
-  image(img, width/2, 0, 320, 240);
+  image(img, 320, 0, 320, 240);
 
-    
-    
-    counter++;
-    
-    closestColorX = 0;
-    closestColorY = 0;
-    count = 0;
-    avgHue = 0;
-    avgBrightness = 0;
-    avgSat = 0;
   
-    for(let x = 0; x < 320; x+=2){
-      for(let y = 0; y < 240; y+=2){
+  counter++;
+  
+  closestColorX = 0;
+  closestColorY = 0;
+  count = 0;
+  avgHue = 0;
+  avgBrightness = 0;
+  avgSat = 0;
+
+  for(let x = 0; x < 320; x+=2){
+    for(let y = 0; y < 240; y+=2){
+    
+      c = video.get(x,y);
+      b = brightness(c);
+      avgHue += hue(c);
+      avgBrightness += b;
+      avgSat += saturation(c);
+    // console.log(x);
       
-        c = video.get(x,y);
-        b = brightness(c);
-        avgHue += hue(c);
-        avgBrightness += b;
-        avgSat += saturation(c);
-      // console.log(x);
-        
-        if(b>threshold){
-          closestColorX += x;
-          closestColorY += y;
-          count++;
-        }
-        
+      if(b>threshold){
+        closestColorX += x;
+        closestColorY += y;
+        count++;
       }
+      
     }
-  
-    if (count > 0) {
-            closestColorX = closestColorX / count;
-            closestColorY = closestColorY / count;
-    }
+  }
 
-    //average of pixels sampled in nested for loop
-    let numPix = (160 * 120)
-    avgHue /= numPix; 
-    avgBrightness /= numPix; 
-    avgSat /= numPix;
+  if (count > 0) {
+    closestColorX = closestColorX / count;
+    closestColorY = closestColorY / count;
+  }
 
-    // fill(col);
-    // ellipse(closestColorX,closestColorY, 50);
-    // ellipse(closestColorX+320,closestColorY, 50);
+  //average of pixels sampled in nested for loop
+  let numPix = (160 * 120)
+  avgHue /= numPix; 
+  avgBrightness /= numPix; 
+  avgSat /= numPix;
 
-    
-    
-    let mapC = img.get(closestColorX,closestColorY);
-         
+  //smple greyscale zone image
+  let mapC = img.get(closestColorX,closestColorY);
+  // console.log(mapC.toString(), mapC[0]);
+        
+  //Left over code from when we were generating text from the brightness coordinates
+  // let textCoordX = int(map(closestColorX, 0, 320, 0,9));
+  // console.log(textCoordX);
+  //let textCoordY = int(map(closestColorY, 0, height, 0,9));
 
-    //Left over code from when we were generating text from the brightness coordinates
-    // let textCoordX = int(map(closestColorX, 0, 320, 0,9));
-    // console.log(textCoordX);
-    //let textCoordY = int(map(closestColorY, 0, height, 0,9));
-
-  
   if (frameCount % 120 == 0 ) {
     if(mapC[0] == 0){
         
         //Left over code from when we were generating text from the brightness coordinates
         //let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'eye';
         //console.log(tempString);
+
+        zone = "STOMACH";
         
         //STOMACH
         let tempIndex = int(random(arrayOfTextActions-1));
@@ -240,7 +199,7 @@ function draw() {
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = stomachBeginnings[begIndex] + newString;
         serial.write(instructions);
-        createP(instructions);
+        createParagraph(instructions);
         
         if(isConnected){
           sendOsc('/eye',newString);
@@ -252,7 +211,8 @@ function draw() {
         //let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'ear';
         //console.log(tempString);
           
-          
+        zone = "MOUTH";
+
         //  MOUTH
         let tempIndex = int(random(arrayOfTextActions-1));
         let begIndex = int(random(mouthBeginnings.length-1));
@@ -260,7 +220,7 @@ function draw() {
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = mouthBeginnings[begIndex] + newString;
         serial.write(instructions);
-        createP(instructions);
+        createParagraph(instructions);
               
         // generate(tempString);
           
@@ -271,6 +231,8 @@ function draw() {
       }
          
       if(mapC[0] == 255){
+
+        zone = "EAR";
           
         //EAR
         let tempIndex = int(random(arrayOfTextActions-1));
@@ -279,7 +241,7 @@ function draw() {
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = earBeginnings[begIndex]+ newString;
         serial.write(instructions);
-        createP(instructions);
+        createParagraph(instructions);
               
           //generate(tempString);
           
@@ -291,52 +253,104 @@ function draw() {
       }
       
         //  console.log(counter);
-         
-        
+          
          
      }
        
     
-   // if(isConnected){
-//    sendOsc('/eye',50);
-  //  } 
 
-
+      //red ellipse
       fill(col);
-      ellipse(closestColorX,closestColorY, 30);
-      ellipse(closestColorX+320,closestColorY, 30);
 
-   
+      push();
+      translate(closestColorX,closestColorY,);
+      stroke("blue");
+      strokeWeight(5);
+      line(0,-15,0,15);
+      line(-15,0,15,0);
+      // ellipse(0,0, 30);
+      pop();
+
+      push();
+      translate(closestColorX+320,closestColorY,);
+      stroke("blue");
+      strokeWeight(5);
+      line(0,-15,0,15);
+      line(-15,0,15,0);
+      // ellipse(0,0, 30);
+      pop();
+
+      noStroke();
+    
+      //Color checking diagram
       let avgCol = color(int(avgHue), int(avgSat), int(avgBrightness));
-     console.log(int(avgHue), int(avgSat), int(avgBrightness));
+      //  console.log(int(avgHue), int(avgSat), int(avgBrightness));
       fill(avgCol);
       rect(0,240,320,240);
 
-      fill(0,0,0);
+      //color checker bg
+      fill("black");
       rect(320,240,320,240);
 
       fill(color(workColor._getHue(),int(avgSat), int(avgBrightness)));
-      rect(320,240,320,20);
-
-      // let distWork = dist(workColor._getHue(),workColor._getSaturation(),workColor._getBrightness(),int(avgHue), int(avgSat), int(avgBrightness));
-      // let distRest = dist(restColor._getHue(),restColor._getSaturation(),restColor._getBrightness(),int(avgHue), int(avgSat), int(avgBrightness));
+      rect(320,240,320,10);
 
       let distWork = abs(workColor._getHue() - int(avgHue));
       let distRest = abs(restColor._getHue() - int(avgHue));
 
-     
+      //when distRange is a negative value color is closer to work
       let distRange = distWork-distRest;
-      textActionsIndex = (distRange < 0) ? 0 : 1;
-      console.log(distWork,distRest,distWork-distRest,textActionsIndex);
-      let yGauge = map(distRange,-50,50,240,height);
+      textActionsIndex = (distRange < 0) ? 0 : 1; // Work index = 0 , Rest index = 1
+      //console.log(distWork,distRest,distWork-distRest,textActionsIndex);
+
+      let yGauge = map(distRange,-50,50,240,height,true);
       fill(avgCol);
       rect(320,yGauge,320,10);
 
-      
-
       // fill(restColor);
       fill(color(restColor._getHue(),int(avgSat), int(avgBrightness)));
-      rect(320,height-20,320,20);
+      rect(320,height-10,320,10);
+
+      // stroke('white');
+      // strokeWeight(3);
+      fill("white");
+      rect(640,0,320,240);
+
+      rectMode(CENTER);
+      fill("black");
+      textAlign(CENTER);
+      textFont(courier);
+      textSize(50);
+      text(zone,800,120);
+      rectMode(CORNER);
+
+      fill("black");
+      rect(640,240,320,240);
+
+      fill("white");
+      rect(640,360,320,2);
+
+      if(textActionsIndex == 0){
+        rectMode(CENTER);
+        fill("white");
+        text("WORK",800,320);
+        rectMode(CORNER);
+      }else{
+        rectMode(CENTER);
+        fill("white");
+        text("REST",800,430);
+        rectMode(CORNER);
+      }
+
+
+
+
+      if (frameCount % 120 == 0 ) {
+        stroke("red");
+        strokeWeight(10);
+        noFill();
+        rect(5,5,width-10,height-10);
+      }
 
 }
 
@@ -348,8 +362,8 @@ function mousePressed() {
   
    // let r = int(random(0, words.length-1));
    // let msg = words[];
-    let msg = closestColorX;
-    console.log(msg);
+  let msg = closestColorX;
+  console.log(msg);
   
   console.log(message);
   serial.write(message);
@@ -426,3 +440,9 @@ function generate(beg) {
 }
 
   
+function createParagraph(text){
+  let para = document.createElement("p");
+  let node = document.createTextNode(text);
+  para.appendChild(node);
+  textlog.prepend(para);
+}
