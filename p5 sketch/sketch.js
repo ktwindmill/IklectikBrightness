@@ -23,20 +23,21 @@ let arrayOfNumbers = [];
 let threshold;
 //let arrayOfTextObjects = ['this', 'that', 'those', 'there', 'here', 'them', 'these', 'everything', 'everyone', 'nothing'];
 //let arrayOfTextActions = ['take','touch','travel','stop','stop','swallow','halve','reverse','count','melt','hold'];
-let earBeginnings = ['whisper to the ear, tell it ','tune the ear, ','what does it think if you tell it','speak up, say loudly to the ear ','shout - ','give it these instructions, tell the ear to '];
-let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, always ','when dealing with a digesting organ it is important to remember to, ', 'move the guts around, touch ','what do you make of it? go, react in the stomach lining '];
+let earBeginnings = ['whisper to the ear, tell it ','tune the ear, ','what does it think if you tell it ','speak up, say loudly to the ear ','shout - ','give it these instructions, tell the ear '];
+let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, always ','when dealing with a digesting organ it is important to remember ', 'move the guts around, touch ','what do you make of it? go, react in the stomach lining '];
 let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its will ','the mouth is talking to you. ','pay attention, this is important, ','listen to the mouth, and tell it to the ear. repeat ','repeat what the mouth is saying with your body. consider ','can you tune the mouth baring in mind '];
 //index 0 will be work words
 //index 1 will be rest words
 let arrayOfTextActions = [
-  ['the', 'present', 'volume', 'may', 'be', 'considered', 'as', 'one', 'of', 'consequences', 'that','a'], 
-  ['ten', 'years', 'to', 'visit', 'a', 'considerable', 'number', 'workshops', 'and', 'factories','pipe','work']
+  ['grow', 'build', 'test', 'fix', 'log', 'move', 'grease', 'tighten', 'twist', 'pull', 'blast','wire'], 
+  ['slide', 'break', 'lose', 'rest', 'fall', 'hold', 'melt', 'sleep', 'degrade', 'stop','sit','reverse']
 ];
 let textActionsIndex = 0;
 let instructions;
 let zone = "";
 let newString;
 let textlog;
+let nounJSON;
 
 //serial communication
 let serial;
@@ -67,6 +68,7 @@ function preload() {
   //preload seed data
   // lines = loadStrings('clockwork.txt');
   lines = loadStrings('cleancombined.txt');
+  nounJSON = loadJSON('nouns.json');
 
 }
 
@@ -79,7 +81,7 @@ function setup() {
   workColor = color(50,100,100); //blue
   restColor = color(0,100,100); // red
   noStroke();
-
+  
   //video set up
   frameRate(60);
   pixelDensity(1);
@@ -111,7 +113,7 @@ function setup() {
   // console.log(text);
 
   // N-gram length and maximum length
-  markov = new MarkovGenerator(7, 15);
+  markov = new MarkovGenerator(7, 10);
   // arrayOfTextActions = markov.seedNgramBeginnings(text);
    //quick test of the structure
   // let tempArray = markov.seedBeginnings(text);
@@ -193,7 +195,7 @@ function draw() {
         zone = "STOMACH";
         
         //STOMACH
-        let tempIndex = int(random(arrayOfTextActions-1));
+        let tempIndex = int(random(arrayOfTextActions[textActionsIndex].length-1));
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
@@ -214,7 +216,7 @@ function draw() {
         zone = "MOUTH";
 
         //  MOUTH
-        let tempIndex = int(random(arrayOfTextActions-1));
+        let tempIndex = int(random(arrayOfTextActions[textActionsIndex].length-1));
         let begIndex = int(random(mouthBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
@@ -235,7 +237,7 @@ function draw() {
         zone = "EAR";
           
         //EAR
-        let tempIndex = int(random(arrayOfTextActions-1));
+        let tempIndex = int(random(arrayOfTextActions[textActionsIndex].length-1));
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);

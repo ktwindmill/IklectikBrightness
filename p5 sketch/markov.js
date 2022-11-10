@@ -142,8 +142,9 @@ class MarkovGenerator {
     let current = beg;
     let output = current;
 
+    let iteratorMax = this.max;
     // Generate a new token max number of times
-    for (let i = 0; i < this.max; i++) {
+    for (let i = 0; i < iteratorMax; i++) {
       // If this is a valid ngram
       if (this.ngrams.hasOwnProperty(current)) {
         // What are all the possible next tokens
@@ -156,10 +157,15 @@ class MarkovGenerator {
         // an ngram in the next iteration of the loop
         // current = output.substring(output.length - this.n, output.length);//ngram implementation
         current = next;//output.substring(output.length - this.n, output.length);
-      } else if(this.max < this.max * 0.75) {
-        current = this.beginnings.choice();
-        output += " " + current;
+        if(i == iteratorMax-1){
+          if(!nounJSON.nouns.includes(current)){
+            iteratorMax ++;
+          }else{
+            output += ".";
+          }
+        }
       }else{
+        output += "."
         break;
       }
     }
