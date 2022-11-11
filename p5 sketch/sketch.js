@@ -15,7 +15,9 @@ let b;
 let avgHue;
 let avgBrightness;
 let avgSat;
-let earR, earG, earB;
+let earR = 0;
+let earG = 0;
+let earB = 0;
 let count;
 let col;
 let workColor; //blue
@@ -103,7 +105,7 @@ function setup() {
   serial.open(portName);   
     
   //osc set up
-  setupOsc(input, output);
+  //params: input, output
   setupOsc(6666, 9999);
     
   //debugging
@@ -345,7 +347,11 @@ function draw() {
         rectMode(CORNER);
       }
 
-
+      rectMode(CENTER);
+      fill("white");
+      textSize(20);
+      text("R:"+ earR+",G:"+earG+",B:"+earB,160,height-20);
+      rectMode(CORNER);
 
 
       if (frameCount % 120 == 0 ) {
