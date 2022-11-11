@@ -26,9 +26,9 @@ let arrayOfNumbers = [];
 let threshold;
 //let arrayOfTextObjects = ['this', 'that', 'those', 'there', 'here', 'them', 'these', 'everything', 'everyone', 'nothing'];
 //let arrayOfTextActions = ['take','touch','travel','stop','stop','swallow','halve','reverse','count','melt','hold'];
-let earBeginnings = ['whisper to the ear, tell it ','tune the ear, ','what does it think if you tell it ','speak up, say loudly to the ear ','shout - ','give it these instructions, tell the ear '];
-let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, always ','when dealing with a digesting organ it is important to remember ', 'move the guts around, touch ','what do you make of it? go, react in the stomach lining '];
-let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its will ','the mouth is talking to you. ','pay attention, this is important, ','listen to the mouth, and tell it to the ear. repeat ','repeat what the mouth is saying with your body. consider ','can you tune the mouth baring in mind '];
+let earBeginnings = ['whisper to the ear, tell it ','tune the ear, ','what does the ear think if you tell it ','speak up, say loudly to the ear ','shout to the ear - ','give the ear these instructions, tell the ear '];
+let stomachBeginnings = ['what can you see there in the stomach, can you ','remember, with stomachs, always ','when dealing with a digesting organ or stomach it is important to remember ', 'move the guts around, touch the stomach ','what do you make of it? go, react in the stomach lining '];
+let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its will ','the mouth is talking to you. ','pay attention, this is important to the mouth ','listen to the mouth. repeat ','repeat what the mouth is saying with your body. consider ','can you tune the mouth baring in mind '];
 //index 0 will be work words
 //index 1 will be rest words
 let arrayOfTextActions = [
@@ -66,7 +66,7 @@ let courier;
 
 function preload() {
   //preload zone mapping
-  img = loadImage('IklectikMaps/V1.png');
+  img = loadImage('IklectikMaps/V2.png');
   courier = loadFont('fonts/CourierNew.ttf');
   //preload seed data
   // lines = loadStrings('clockwork.txt');
@@ -202,7 +202,7 @@ function draw() {
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
-        instructions = 'stomach' + stomachBeginnings[begIndex] + newString;
+        instructions = stomachBeginnings[begIndex] + newString;
         serial.write(instructions);
         createParagraph(instructions);
         
@@ -223,7 +223,7 @@ function draw() {
         let begIndex = int(random(mouthBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
-        instructions = 'mouth'+mouthBeginnings[begIndex] + newString;
+        instructions = mouthBeginnings[begIndex] + newString;
         serial.write(instructions);
         createParagraph(instructions);
               
@@ -244,7 +244,7 @@ function draw() {
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
-        instructions = 'ear'+earBeginnings[begIndex]+ newString;
+        instructions = earBeginnings[begIndex]+ newString;
         serial.write(instructions);
         createParagraph(instructions);
               
@@ -350,7 +350,7 @@ function draw() {
       rectMode(CENTER);
       fill("white");
       textSize(20);
-      text("R:"+ earR+",G:"+earG+",B:"+earB,160,height-20);
+      text("Color:"+earR,160,height-20);
       rectMode(CORNER);
 
 
@@ -407,8 +407,6 @@ function receiveOsc(address, value) {
 
 	if (address == '/ear/color') {
 		earR = value[0];
-		earG = value[1];
-    earB = value[2];
 	}
 }
 

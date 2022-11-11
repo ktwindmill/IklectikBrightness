@@ -35,7 +35,7 @@ void setup() {
       printer.justify('C');
       printer.setSize('M');
         //  printer.printBitmap(104, 100, ear); 
-          printer.println("hello");
+       printer.println("hello");
 
 }
 
@@ -60,11 +60,18 @@ void loop() {
           printer.println(message+"\r\n");
          
      }
-     if (message.indexOf("eye") != -1) {
+     if (message.indexOf("mouth") != -1) {
        // printer.upsideDownOn();
         printer.justify('C');
         printer.setSize('M');
-          printer.printBitmap(104, 100, mouth); 
+          printer.printBitmap(104, 100, ear); 
+          printer.println(message+"\r\n");
+     }
+     if (message.indexOf("stomach") != -1) {
+       // printer.upsideDownOn();
+        printer.justify('C');
+        printer.setSize('M');
+          printer.printBitmap(104, 100, ear); 
           printer.println(message+"\r\n");
      }
 
