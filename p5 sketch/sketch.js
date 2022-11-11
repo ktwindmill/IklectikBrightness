@@ -41,7 +41,7 @@ let nounJSON;
 
 //serial communication
 let serial;
-let portName = "/dev/tty.usbmodem1411";
+let portName = "/dev/cu.usbmodem1411";
 let inData; 
 let outByte = 0;
 let counter = 0;
@@ -199,7 +199,7 @@ function draw() {
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
-        instructions = stomachBeginnings[begIndex] + newString;
+        instructions = 'stomach' + stomachBeginnings[begIndex] + newString;
         serial.write(instructions);
         createParagraph(instructions);
         
@@ -220,7 +220,7 @@ function draw() {
         let begIndex = int(random(mouthBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
-        instructions = mouthBeginnings[begIndex] + newString;
+        instructions = 'mouth'+mouthBeginnings[begIndex] + newString;
         serial.write(instructions);
         createParagraph(instructions);
               
@@ -241,7 +241,7 @@ function draw() {
         let begIndex = int(random(stomachBeginnings.length-1));
         //console.log(begIndex);
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
-        instructions = earBeginnings[begIndex]+ newString;
+        instructions = 'ear'+earBeginnings[begIndex]+ newString;
         serial.write(instructions);
         createParagraph(instructions);
               
