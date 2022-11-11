@@ -15,6 +15,7 @@ let b;
 let avgHue;
 let avgBrightness;
 let avgSat;
+let earR, earG, earB;
 let count;
 let col;
 let workColor; //blue
@@ -102,8 +103,8 @@ function setup() {
   serial.open(portName);   
     
   //osc set up
-  //setupOsc(input, output);
-  //setupOsc(6666, 9999);
+  setupOsc(input, output);
+  setupOsc(6666, 9999);
     
   //debugging
   count = 0;
@@ -379,13 +380,13 @@ function keyPressed(){
     
     if (value === 0) {
         
-        let bodyPart = '!eye'
+      let bodyPart = '!eye'
         
     }
     
     if (value === 2){
         
-        let instruction = 'eye'
+      let instruction = 'eye'
     }
 }
 
@@ -398,9 +399,10 @@ function serialError(err){
 function receiveOsc(address, value) {
 	console.log("received OSC: " + address + ", " + value);
 
-	if (address == '/test') {
-		x = value[0];
-		y = value[1];
+	if (address == '/ear/color') {
+		earR = value[0];
+		earG = value[1];
+    earB = value[2];
 	}
 }
 
