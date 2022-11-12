@@ -51,7 +51,7 @@ let counter = 0;
 
 var socket;
 var isConnected = false;
-let oscHubIP = '10.100.9.204';
+let oscHubIP = 'localhost';
 
 
 //text generation
@@ -411,29 +411,53 @@ function receiveOsc(address, value) {
 }
 
 function sendOsc(address, value) {
-	socket.emit('message', [address].concat(value));
+	// socket.emit('message', [address].concat(value));
+
+  socket.send(JSON.stringify({
+    type: "oscMessage",
+    content: [address].concat(value)
+  }));
+
+
 }
 
 function setupOsc(oscPortIn, oscPortOut) {
-  socket = io.connect('http://127.0.0.1:8090', { port: 8090, rememberTransport: false });
-	socket.on('connect', function() {
-		socket.emit('config', {
-			server: { port: oscPortIn,  host: '127.0.0.1'},
-			client: { port: oscPortOut, host: oscHubIP}
-		});
-        
-           isConnected = true;
-        
-	});
-	socket.on('message', function(msg) {
-		if (msg[0] == '#bundle') {
-			for (var i=2; i<msg.length; i++) {
-				receiveOsc(msg[i][0], msg[i].splice(1));
-			}
-		} else {
-			receiveOsc(msg[0], msg.splice(1));
-		}
-	});
+  socket = new WebSocket("ws://localhost:8090");
+
+  socket.addEventListener("open", () => {
+    // send a message to the server
+    socket.send(JSON.stringify({
+      type: "config",
+      content: {
+        		server: { port: oscPortIn,  host: '127.0.0.1'},
+        		client: { port: oscPortOut, host: oscHubIP}
+        	}
+    }));
+    
+    isConnected = true;
+  });
+
+  // receive a message from the server
+  socket.addEventListener("message", ({ data }) => {
+    const packet = JSON.parse(data);
+
+    switch (packet.type) {
+      case "hello from server":
+        console.log("hello from server");
+        break;
+      case "oscMessage":
+        console.log(packet.content);
+        if (packet.content[0] == '#bundle') {
+          for (var i=2; i<msg.length; i++) {
+            receiveOsc(msg[i][0], msg[i].splice(1));
+          }
+        } else {
+          receiveOsc(packet.content[0], packet.content.splice(1));
+        }
+        break;
+    }
+  });
+
 }
 
 
