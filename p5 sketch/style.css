@@ -4,12 +4,63 @@ html, body {
   background-color: rgb(30, 30, 130);
   color:white;
   font-family: Courier;
+  font-size: 25px;
 }
 canvas {
   display: block;
 }
 
+#page{
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden;
+  width:100%;
+}
+
+#osc-log{
+  flex-grow: 1;
+  height:100%;
+  margin:40px 0px 40px 40px;
+}
+
+#osc-log p{
+ margin: 0;
+}
+#stats{
+  position: relative;
+}
+#stats span{
+  display: block;
+  position: absolute;
+  bottom:0;
+  left:0;
+  padding-bottom: 25px;
+}
+
+#color-block,
+#stats{
+  height:240px;
+}
+
+#color-block div{
+  width:100%;
+  height:240px;
+}
+
 #wrapper{
   width:960px;
-  margin:20px auto;
+  margin:40px 40px;
+  flex-basis: auto;
+  height:100%;
 }
+#messages{
+  padding-top:25px;
+}
+/* #log{
+  border: solid white 2px;
+  margin: 20px 0px;
+  padding: 0px 20px;
+} */
+

@@ -9,7 +9,7 @@
   "dependencies": {
     "http": "0.0.0",
     "node-osc": "8.0.6",
-    "socket.io": "4.5.3"
+    "ws": "8.11.0"
   },
   "keywords": [
     "osc",

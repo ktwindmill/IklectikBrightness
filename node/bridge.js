@@ -9,6 +9,12 @@ let oscServer, oscClient;
 server.on("connection", (socket) => {
 	console.log("connected");
 
+	if (isConnected) {
+		console.log("Close OSC");
+		if(oscServer)oscServer.close();
+		if(oscClient)oscClient.close();
+	}
+
 	// receive a message from the client
 	socket.on("message", (data) => {
 		const packet = JSON.parse(data);
@@ -53,13 +59,14 @@ server.on("connection", (socket) => {
 	});
 
 
-
-	socket.on('disconnect', function(){
+	socket.on('close', function close() {
+		console.log("disconnect");
 		if (isConnected) {
-			oscServer.close();
-			oscClient.close();
+			isConnected = false;
+			if(oscServer)oscServer.close();
+			if(oscClient)oscClient.close();
 		}
-  	});
+	  });
 
 });
 

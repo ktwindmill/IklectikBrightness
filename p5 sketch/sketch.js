@@ -40,6 +40,9 @@ let instructions;
 let zone = "";
 let newString;
 let textlog;
+let osclog;
+let colorBlock;
+let logMssg;
 let nounJSON;
 
 //serial communication
@@ -129,7 +132,9 @@ function setup() {
   // console.log(markov);
     
   textlog = document.getElementById("log");
-    
+  osclog = document.getElementById("messages");
+  colorBlock = document.getElementById("color");
+  logMssg = document.getElementById("stats");
 }
 
 function draw() {
@@ -204,10 +209,10 @@ function draw() {
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = stomachBeginnings[begIndex] + newString;
         serial.write(instructions);
-        createParagraph(instructions);
+        createTextLog(instructions);
         
         if(isConnected){
-          sendOsc('/eye',newString);
+          sendOsc('/eye',instructions);
           // console.log('eye');
         }
       }
@@ -225,12 +230,12 @@ function draw() {
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = mouthBeginnings[begIndex] + newString;
         serial.write(instructions);
-        createParagraph(instructions);
+        createTextLog(instructions);
               
         // generate(tempString);
           
         if(isConnected){
-        sendOsc('/eye',newString);
+        sendOsc('/eye',instructions);
         // console.log('eye');
         }
       }
@@ -246,12 +251,12 @@ function draw() {
         generate(arrayOfTextActions[textActionsIndex][tempIndex]);
         instructions = earBeginnings[begIndex]+ newString;
         serial.write(instructions);
-        createParagraph(instructions);
+        createTextLog(instructions);
               
           //generate(tempString);
           
           if(isConnected){
-          sendOsc('/eye',newString);
+          sendOsc('/eye',instructions);
         // console.log('eye');
         }
           
@@ -347,11 +352,11 @@ function draw() {
         rectMode(CORNER);
       }
 
-      rectMode(CENTER);
-      fill("white");
-      textSize(20);
-      text("Color:"+earR,160,height-20);
-      rectMode(CORNER);
+      // rectMode(CENTER);
+      // fill("white");
+      // textSize(20);
+      // text("Color:"+earR,160,height-20);
+      // rectMode(CORNER);
 
 
       if (frameCount % 120 == 0 ) {
@@ -407,6 +412,19 @@ function receiveOsc(address, value) {
 
 	if (address == '/ear/color') {
 		earR = value[0];
+
+    createOscLog(address + " " + value);
+
+    let earC = color("rgb("+value+")");
+    let diff = int(hue(earC) - avgHue);
+
+    let logString = "<span>data lost in looking: " + diff;
+    logString += "<br> the ear hears: </span>";
+
+    logMssg.innerHTML = logString;
+
+    colorBlock.setAttribute("style","background-color:rgb("+earR+")");
+
 	}
 }
 
@@ -472,9 +490,24 @@ function generate(beg) {
 }
 
   
-function createParagraph(text){
+function createOscLog(text){
+  let para = document.createElement("p");
+  let node = document.createTextNode(text);
+  para.appendChild(node);
+  osclog.prepend(para);
+  let paras = osclog.getElementsByTagName("p");
+  if(paras.length > 30){
+    osclog.removeChild(osclog.lastChild);
+  }
+}
+  
+function createTextLog(text){
   let para = document.createElement("p");
   let node = document.createTextNode(text);
   para.appendChild(node);
   textlog.prepend(para);
+  let paras = textlog.getElementsByTagName("p");
+  if(paras.length > 30){
+    textlog.removeChild(textlog.lastChild);
+  }
 }
