@@ -54,7 +54,7 @@ let counter = 0;
 
 var socket;
 var isConnected = false;
-let oscHubIP = 'localhost';
+let oscHubIP = '192.168.0.57';
 
 
 //text generation
@@ -197,7 +197,7 @@ function draw() {
   // console.log(textCoordX);
   //let textCoordY = int(map(closestColorY, 0, height, 0,9));
 
-  if (frameCount % 120 == 0 ) {
+  if (frameCount % 240 == 0 ) {
     if(mapC[0] == 0){
         
         //Left over code from when we were generating text from the brightness coordinates
