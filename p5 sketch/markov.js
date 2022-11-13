@@ -9,6 +9,8 @@
 // Prototype is magic!  By accessing Array.prototype
 // we can augment every single Array object with an new function
 
+let connectingWords = ["a","i","this","that","the","of","and"];
+
 // Like python's choice this will return a
 // random element from an array
 Array.prototype.choice = function() {
@@ -158,7 +160,8 @@ class MarkovGenerator {
         // current = output.substring(output.length - this.n, output.length);//ngram implementation
         current = next;//output.substring(output.length - this.n, output.length);
         if(i == iteratorMax-1){
-          if(!nounJSON.nouns.includes(current)){
+          // if(!nounJSON.nouns.includes(current)){
+          if(connectingWords.includes(current)){
             iteratorMax ++;
           }else{
             output += ".";

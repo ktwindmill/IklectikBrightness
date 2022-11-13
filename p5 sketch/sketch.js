@@ -80,6 +80,10 @@ function preload() {
 
 
 function setup() {
+
+
+
+
   colorMode(HSB, 100);
   let myCanvas = createCanvas(960, 480);
   myCanvas.parent("canvasContainer");
@@ -119,7 +123,7 @@ function setup() {
   // console.log(text);
 
   // N-gram length and maximum length
-  markov = new MarkovGenerator(7, 10);
+  markov = new MarkovGenerator(7, 15);
   // arrayOfTextActions = markov.seedNgramBeginnings(text);
    //quick test of the structure
   // let tempArray = markov.seedBeginnings(text);
