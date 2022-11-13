@@ -13,17 +13,17 @@
 
   #include "ear.h"
   #include "mouth_right.h"
-  #include "ear_middle.h"
-  #include "eye_right.h"
-  #include "stomache_middle.h"
-  #include "earK.h"
-  #include "ear1.h"
-  #include "mouthK.h"
-  #include "mouthK2.h"
-  #include "mouthK3.h"
-  #include "st.h"
-  #include "st2.h"
-  #include "st3.h"
+  //#include "ear_middle.h"
+ // #include "eye_right.h"
+  #include "stomach_middle.h"
+  //#include "earK.h"
+  //#include "ear1.h"
+  //#include "mouthK.h"
+  //#include "mouthK2.h"
+  //#include "mouthK3.h"
+  //#include "st.h"
+  //#include "st2.h"
+  //#include "st3.h"
 
 #define TX_PIN 5// Arduino transmit  BLUE WIRE  labeled RX on printer
 #define RX_PIN 6 // Arduino receive   GREEN WIRE   labeled TX on printer
@@ -56,6 +56,7 @@ void loop() {
   // check if data has been sent from the computer:
   if (Serial.available() > 0) {
 
+ 
     message = Serial.readString();
 //     printer.upsideDownOn();
 //     printer.justify('C');
@@ -68,25 +69,15 @@ void loop() {
       printer.justify('C');
       printer.setSize('M');
 
-      int img = random(3);
-
-      if(img == 0){
+     
+    //  if(img == 0){
         printer.printBitmap(104, 100, ear); 
-      }
-
-      if(img == 1){
-        printer.printBitmap(304, 150, ear_middle); 
-      }
-         
-           if(img == 2){
-        printer.printBitmap(304, 150, earbmp); 
-      }
-
+    //  }
       
-           if(img == 3){
-        printer.printBitmap(304, 150, earKbmp); 
-      }
-
+     // if(img == 1){
+     //   printer.printBitmap(304, 150, ear_middle); 
+     // }
+         
           printer.println(message+"\r\n");
          
      }
@@ -97,24 +88,14 @@ void loop() {
         printer.justify('C');
         printer.setSize('M');
 
-        int img = random(3);
 
-        if(img == 0){
+        //if(img == 0){
           printer.printBitmap(304, 150, mouth_right); 
-        }
+        //}
 
-        if(img == 1){
-          printer.printBitmap(304, 150, mouthKbmp); 
-        }
-
-        if(img == 2){
-          printer.printBitmap(304, 150, mouthK2); 
-        }
-
-        
-        if(img == 3){
-          printer.printBitmap(304, 150, mouthk3bmp); 
-        }
+       // if(img == 1){
+       //   printer.printBitmap(304, 150, mouthKbmp); 
+      //  }
 
           printer.println(message+"\r\n");
      }
@@ -124,19 +105,13 @@ void loop() {
         printer.justify('C');
         printer.setSize('M');
 
-        int img = random(2);
+       // if(img == 0){
+          printer.printBitmap(304, 150, stomach_middle); 
+       // }
 
-        if(img == 0){
-          printer.printBitmap(304, 150, stbmp); 
-        }
-
-         if(img == 1){
-          printer.printBitmap(304, 150, st2bmp); 
-        }
-
-         if(img == 2){
-          printer.printBitmap(304, 150, st3bmp); 
-        }
+       // if(img == 1){
+       //   printer.printBitmap(304, 150, st2bmp); 
+      //  }
 
           printer.println(message+"\r\n");
      }
