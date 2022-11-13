@@ -54,7 +54,7 @@ let counter = 0;
 
 var socket;
 var isConnected = false;
-let oscHubIP = '192.168.0.57';
+let oscHubIP = '192.168.0.62';
 
 
 //text generation
@@ -123,7 +123,7 @@ function setup() {
   // console.log(text);
 
   // N-gram length and maximum length
-  markov = new MarkovGenerator(7, 15);
+  markov = new MarkovGenerator(7, 10);
   // arrayOfTextActions = markov.seedNgramBeginnings(text);
    //quick test of the structure
   // let tempArray = markov.seedBeginnings(text);
