@@ -22,6 +22,7 @@ io.sockets.on('connection', function (socket) {
 	    oscClient = new osc.Client(obj.client.host, obj.client.port);
 	    oscClient.send('/status', socket.sessionId + ' connected');
 		oscServer.on('message', function(msg, rinfo) {
+			console.log(msg);
 			socket.emit("message", msg);
 		});
 		socket.emit("connected", 1);
