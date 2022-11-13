@@ -32,8 +32,8 @@ let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its wil
 //index 0 will be work words
 //index 1 will be rest words
 let arrayOfTextActions = [
-  ['put', 'prompts', 'get', 'read', 'media', 'task', 'purpose', 'testing', 'user', 'install', 'key','service'], 
-  ['right', 'post', 'try', 'correct', 'loop', 'press', 'edit', 'guide', 'copy', 'consent','master','push']
+  ['put', 'work', 'get', 'read', 'pull', 'charge', 'allow', 'test', 'note', 'install', 'key','service'], 
+  ['break', 'apply', 'risk', 'ice', 'loosen', 'press', 'feel', 'move', 'check', 'assess','fracture','examine']
 ];
 let textActionsIndex = 0;
 let instructions;
@@ -73,8 +73,8 @@ function preload() {
   courier = loadFont('fonts/CourierNew.ttf');
   //preload seed data
   // lines = loadStrings('clockwork.txt');
-  lines = loadStrings('DeveloperGuide.txt');
-  nounJSON = loadJSON('uniqueNouns2.json');
+  lines = loadStrings('cleanmixOfTexts.txt');
+  nounJSON = loadJSON('uniqueNounsMix.json');
 
 }
 
