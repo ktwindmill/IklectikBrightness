@@ -1,72 +1,40 @@
-import { Client } from 'node-osc';
-import { Server } from 'node-osc';
-import { WebSocketServer } from "ws";
+var osc = require('node-osc');
+var io = require('socket.io')(8090);
 
-const server = new WebSocketServer({ port: 8090 });
-let isConnected = false;
-let oscServer, oscClient;
 
-server.on("connection", (socket) => {
-	console.log("connected");
+var oscServer, oscClient;
+
+var isConnected = false;
+
+io.sockets.on('connection', function (socket) {
+	console.log('connection');
 
 	if (isConnected) {
 		console.log("Close OSC");
-		if(oscServer)oscServer.close();
-		if(oscClient)oscClient.close();
+		if(oscServer)oscServer.kill();
+		if(oscClient)oscClient.kill();
 	}
 
-	// receive a message from the client
-	socket.on("message", (data) => {
-		const packet = JSON.parse(data);
 
-		switch (packet.type) {
-			case "hello from client":
-				console.log(hello);
-				break;
-			case "config":
-				isConnected = true;
-				let config = packet.content;
-		
-				oscServer = new Server(config.server.port, config.server.host, () => {
-					console.log('OSC Server is listening');
-				});
-		
-				oscClient = new Client(config.client.host, config.client.port);
-				oscClient.send('/status', socket.sessionId + ' connected');
-		
-				oscServer.on('message', function (msg) {
-					console.log(`Message: ${msg}`);
-					socket.send(JSON.stringify({
-						type: "oscMessage",
-						content: msg
-					}));
-				});
-		
-				socket.send(JSON.stringify({
-					type: "hello from server",
-					content: [ 1, "2" ]
-				}));
-				break;
-			case "oscMessage":
-				console.log("oscMessage", packet.content);
-				oscClient.send(packet.content[0], packet.content[1]);
-				break;
-			default:
-				console.log("error");
-			//	oscClient.send.apply(oscClient, obj);
-				break;
-		}
+	socket.on("config", function (obj) {
+		isConnected = true;
+    	oscServer = new osc.Server(obj.server.port, obj.server.host);
+	    oscClient = new osc.Client(obj.client.host, obj.client.port);
+	    oscClient.send('/status', socket.sessionId + ' connected');
+		oscServer.on('message', function(msg, rinfo) {
+			socket.emit("message", msg);
+		});
+		socket.emit("connected", 1);
 	});
-
-
-	socket.on('close', function close() {
+ 	socket.on("message", function (obj) {
+		oscClient.send.apply(oscClient, obj);
+  	});
+	socket.on('disconnect', function(){
 		console.log("disconnect");
 		if (isConnected) {
 			isConnected = false;
-			if(oscServer)oscServer.close();
-			if(oscClient)oscClient.close();
+			oscServer.kill();
+			oscClient.kill();
 		}
-	  });
-
+  	});
 });
-
