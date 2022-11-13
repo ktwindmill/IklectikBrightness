@@ -10,17 +10,20 @@
 
   #include "Adafruit_Thermal.h"
   #include "SoftwareSerial.h"
+
   #include "ear.h"
-  #include "mouth.h"
   #include "mouth_right.h"
   #include "ear_middle.h"
   #include "eye_right.h"
   #include "stomache_middle.h"
-  #include "earK2.h"
+  #include "earK.h"
+  #include "ear1.h"
+  #include "mouthK.h"
   #include "mouthK2.h"
   #include "mouthK3.h"
-  #include "stoK.h"
-  #include "stok2.h"
+  #include "st.h"
+  #include "st2.h"
+  #include "st3.h"
 
 #define TX_PIN 5// Arduino transmit  BLUE WIRE  labeled RX on printer
 #define RX_PIN 6 // Arduino receive   GREEN WIRE   labeled TX on printer
@@ -65,18 +68,23 @@ void loop() {
       printer.justify('C');
       printer.setSize('M');
 
-      int img = random(2);
+      int img = random(3);
 
       if(img == 0){
         printer.printBitmap(104, 100, ear); 
       }
 
       if(img == 1){
-        printer.printBitmap(104, 100, ear_middle); 
+        printer.printBitmap(304, 150, ear_middle); 
       }
          
            if(img == 2){
-        printer.printBitmap(104, 100, earK2); 
+        printer.printBitmap(304, 150, earbmp); 
+      }
+
+      
+           if(img == 3){
+        printer.printBitmap(304, 150, earKbmp); 
       }
 
           printer.println(message+"\r\n");
@@ -92,20 +100,20 @@ void loop() {
         int img = random(3);
 
         if(img == 0){
-          printer.printBitmap(104, 100, mouth_right); 
+          printer.printBitmap(304, 150, mouth_right); 
         }
 
         if(img == 1){
-          printer.printBitmap(104, 100, mouthK); 
+          printer.printBitmap(304, 150, mouthKbmp); 
         }
 
         if(img == 2){
-          printer.printBitmap(104, 100, mouthK2); 
+          printer.printBitmap(304, 150, mouthK2); 
         }
 
         
         if(img == 3){
-          printer.printBitmap(104, 100, mouthK3); 
+          printer.printBitmap(304, 150, mouthk3bmp); 
         }
 
           printer.println(message+"\r\n");
@@ -119,15 +127,15 @@ void loop() {
         int img = random(2);
 
         if(img == 0){
-          printer.printBitmap(104, 100, stomach_middle); 
+          printer.printBitmap(304, 150, stbmp); 
         }
 
          if(img == 1){
-          printer.printBitmap(104, 100, stoK); 
+          printer.printBitmap(304, 150, st2bmp); 
         }
 
          if(img == 2){
-          printer.printBitmap(104, 100, stoK2); 
+          printer.printBitmap(304, 150, st3bmp); 
         }
 
           printer.println(message+"\r\n");
