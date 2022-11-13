@@ -145,7 +145,19 @@ class MarkovGenerator {
     let output = current;
 
     let iteratorMax = this.max;
-    let numExtraIterations = 0;
+    //add iterator maxnum
+  //   if(connectingWords.includes(current)){
+  //     iteratorMax ++;
+  //   }else if(numExtraIterations < 3){
+  //     if(!nounJSON.nouns.includes(current)){
+  //       numExtraIterations ++;
+  //       iteratorMax ++;
+  //     }  
+  //   }else{
+  //     output += ".";
+  //     break;
+  //   }
+  // }
     // Generate a new token max number of times
     for (let i = 0; i < iteratorMax; i++) {
       // If this is a valid ngram
@@ -161,14 +173,9 @@ class MarkovGenerator {
         // current = output.substring(output.length - this.n, output.length);//ngram implementation
         current = next;//output.substring(output.length - this.n, output.length);
         if(i == iteratorMax-1){
-          // 
+          // if(!nounJSON.nouns.includes(current)){
           if(connectingWords.includes(current)){
             iteratorMax ++;
-          }else if(numExtraIterations < 3){
-            if(!nounJSON.nouns.includes(current)){
-              numExtraIterations ++;
-              iteratorMax ++;
-            }  
           }else{
             output += ".";
           }

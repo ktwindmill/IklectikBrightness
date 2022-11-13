@@ -32,8 +32,8 @@ let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its wil
 //index 0 will be work words
 //index 1 will be rest words
 let arrayOfTextActions = [
-  ['grow', 'build', 'test', 'fix', 'log', 'move', 'grease', 'tighten', 'twist', 'pull', 'blast','wire'], 
-  ['slide', 'break', 'lose', 'rest', 'fall', 'hold', 'melt', 'sleep', 'degrade', 'stop','sit','reverse']
+  ['put', 'prompts', 'get', 'read', 'media', 'task', 'purpose', 'testing', 'user', 'install', 'key','service'], 
+  ['right', 'post', 'try', 'correct', 'loop', 'press', 'edit', 'guide', 'copy', 'consent','master','push']
 ];
 let textActionsIndex = 0;
 let instructions;
@@ -363,7 +363,7 @@ function draw() {
       // rectMode(CORNER);
 
 
-      if (frameCount % 120 == 0 ) {
+      if (frameCount % 240 == 0 ) {
         stroke("red");
         strokeWeight(10);
         noFill();
