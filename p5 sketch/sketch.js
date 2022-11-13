@@ -73,8 +73,8 @@ function preload() {
   courier = loadFont('fonts/CourierNew.ttf');
   //preload seed data
   // lines = loadStrings('clockwork.txt');
-  lines = loadStrings('cleancombined.txt');
-  nounJSON = loadJSON('nouns.json');
+  lines = loadStrings('DeveloperGuide.txt');
+  nounJSON = loadJSON('uniqueNouns2.json');
 
 }
 
