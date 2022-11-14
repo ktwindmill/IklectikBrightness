@@ -47,7 +47,7 @@ let nounJSON;
 
 //serial communication
 let serial;
-let portName = "/dev/cu.usbmodem1471";
+let portName = "/dev/cu.usbmodem1411";
 let inData; 
 let outByte = 0;
 let counter = 0;
@@ -80,6 +80,9 @@ function preload() {
 
 
 function setup() {
+
+
+
 
   colorMode(HSB, 100);
   let myCanvas = createCanvas(960, 480);
@@ -322,52 +325,17 @@ function draw() {
       fill(color(restColor._getHue(),int(avgSat), int(avgBrightness)));
       rect(320,height-10,320,10);
 
+      // stroke('white');
+      // strokeWeight(3);
+      fill("white");
+      rect(640,0,320,240);
 
-
-      // //original zones drawing
-      // fill("white")
-      // rect(640,0,320,240);
-
-      // rectMode(CENTER);
-      // fill("black");
-      // textAlign(CENTER);
-      // textFont(courier);
-      // textSize(50);
-      // text(zone,800,120);
-      // rectMode(CORNER);
-      
-      
+      rectMode(CENTER);
+      fill("black");
       textAlign(CENTER);
       textFont(courier);
       textSize(50);
-
-      if(zone == "STOMACH"){
-        //black
-        fill("black");
-        rect(640,0,320,240);
-        rectMode(CENTER);
-        fill(color(0,0,35));
-        text(zone,800,120);
-      }
-
-      if(zone == "MOUTH"){
-        //grey
-        fill(color(0,0,35));
-        rect(640,0,320,240);
-        rectMode(CENTER);
-        fill("white");
-        text(zone,800,120);
-      }
-
-      if(zone == "EAR"){
-        //white
-        fill("white");
-        rect(640,0,320,240);
-        rectMode(CENTER);
-        fill("black");
-        text(zone,800,120);
-      }
-
+      text(zone,800,120);
       rectMode(CORNER);
 
       fill("black");
