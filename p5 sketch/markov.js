@@ -9,7 +9,7 @@
 // Prototype is magic!  By accessing Array.prototype
 // we can augment every single Array object with an new function
 
-let connectingWords = ["a","i","this","that","the","of","and"];
+let connectingWords = ["a","i","this","that","the","of","and", "or", "to","they", "these", "by", "but", "an","as","their","is"];
 
 // Like python's choice this will return a
 // random element from an array
@@ -136,6 +136,8 @@ class MarkovGenerator {
 
   // Generate a text from the information ngrams
   generate(beg) {
+
+   // console.log(beg);
 
     // Get a random  beginning
    // let current = this.beginnings.choice();

@@ -33,7 +33,7 @@ let mouthBeginnings = ['shh, listen to what the mouth is saying, move to its wil
 //index 1 will be rest words
 let arrayOfTextActions = [
   ['put', 'work', 'get', 'read', 'pull', 'charge', 'allow', 'test', 'note', 'install', 'key','service'], 
-  ['break', 'apply', 'risk', 'ice', 'loosen', 'press', 'feel', 'move', 'check', 'assess','fracture','examine']
+  ['break', 'apply', 'risk', 'ice', 'thirst', 'press', 'feel', 'move', 'check', 'fracture','heat','examine']
 ];
 let textActionsIndex = 0;
 let instructions;
@@ -44,6 +44,7 @@ let osclog;
 let colorBlock;
 let logMssg;
 let nounJSON;
+let detectedCapture = false;
 
 //serial communication
 let serial;
@@ -73,7 +74,7 @@ function preload() {
   courier = loadFont('fonts/CourierNew.ttf');
   //preload seed data
   // lines = loadStrings('clockwork.txt');
-  lines = loadStrings('cleanmixOfTexts.txt');
+  lines = loadStrings('cleanedmixOfTexts.txt');
   nounJSON = loadJSON('uniqueNounsMix.json');
 
 }
@@ -196,7 +197,8 @@ function draw() {
 
   if (frameCount % 240 == 0 ) {
     if(mapC[0] == 0){
-        
+        detectedCapture = true;
+
         //Left over code from when we were generating text from the brightness coordinates
         //let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'eye';
         //console.log(tempString);
@@ -219,6 +221,7 @@ function draw() {
       }
           
       if(mapC[0] == 88){
+        detectedCapture = true;
         //let tempString = arrayOfTextActions[textCoordX]+' '+arrayOfTextObjects[textCoordY]+' '+'ear';
         //console.log(tempString);
           
@@ -242,7 +245,7 @@ function draw() {
       }
          
       if(mapC[0] == 255){
-
+        detectedCapture = true;
         zone = "EAR";
           
         //EAR
@@ -346,7 +349,7 @@ function draw() {
         fill("black");
         rect(640,0,320,240);
         rectMode(CENTER);
-        fill(color(0,0,35));
+        fill(color(0,0,60));
         text(zone,800,120);
       }
 
@@ -395,7 +398,9 @@ function draw() {
       // rectMode(CORNER);
 
 
-      if (frameCount % 240 == 0 ) {
+      if (frameCount % 240 == 0 && detectedCapture) {
+        // console.log("capture");
+        detectedCapture = false;
         stroke("red");
         strokeWeight(10);
         noFill();
